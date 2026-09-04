@@ -132,4 +132,4 @@ for i in range(10, 0, -1):
                     code: `namen = ["Alice", "Bob", "Charlie"]\ngesucht = "David"\n\nfor name in namen:\n    if name == gesucht:\n        print(gesucht + " wurde gefunden!")\n        break\nelse:\n    print(gesucht + " ist nicht in der Liste.")`
                 }
             ]
-        };
+        },
