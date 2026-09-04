@@ -1,10 +1,12 @@
 // Importiere unsere Daten-Module
 import { dataBasics } from './data_basics.js';
 import { dataLoops } from './data_loops.js';
-import { dataoop } from './data_oop.js';
+import { dataOop } from './data_oop.js';
+import { dataStructures } from './data_structures.js'; // <-- NEU
+import { dataFunctions } from './data_functions.js';   // <-- NEU
 
 // Alle Module in einer Liste sammeln
-const allModules = [dataBasics, dataLoops, dataoop];
+const allModules = [dataBasics, dataLoops, dataOop, dataStructures, dataFunctions];
 
 // UI Elemente referenzieren
 const nav = document.getElementById('sidebar-nav');
