@@ -2,11 +2,13 @@
 import { dataBasics } from './data_basics.js';
 import { dataLoops } from './data_loops.js';
 import { dataOop } from './data_oop.js';
-import { dataStructures } from './data_structures.js'; // <-- NEU
-import { dataFunctions } from './data_functions.js';   // <-- NEU
+import { dataStructures } from './data_structures.js';
+import { dataFunctions } from './data_functions.js';
+import { dataErrors } from './data_errors.js';     // <-- NEU
+import { dataImports } from './data_imports.js';   // <-- NEU   // <-- NEU
 
 // Alle Module in einer Liste sammeln
-const allModules = [dataBasics, dataLoops, dataOop, dataStructures, dataFunctions];
+const allModules = [dataBasics, dataLoops, dataOop, dataStructures, dataFunctions, dataErrors, dataImports];
 
 // UI Elemente referenzieren
 const nav = document.getElementById('sidebar-nav');
