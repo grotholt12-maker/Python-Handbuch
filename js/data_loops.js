@@ -107,39 +107,30 @@ for i in range(10, 0, -1):
     print("Rückwärts:", i)`
         },
         {
+            {
             id: "advanced_loops",
             title: "Fortgeschrittene Iteration",
             content: `
-                <p class="mb-4">Hier wird es "pythonic" (so programmieren echte Python-Entwickler). Diese Werkzeuge machen deinen Code kürzer, schneller und lesbarer.</p>
-                
+                <p class="mb-4">Hier wird es "pythonic". Diese Werkzeuge machen deinen Code kürzer, schneller und lesbarer.</p>
                 <ul class="list-disc pl-5 mb-4 space-y-2 text-gray-700">
-                    <li><strong>enumerate():</strong> Gibt dir beim Durchlaufen nicht nur das Element, sondern auch seinen Index (die Positionsnummer). Kein manuelles Zählen mehr!</li>
-                    <li><strong>zip():</strong> Klebt zwei oder mehr Listen wie ein Reißverschluss zusammen, sodass du sie gleichzeitig durchlaufen kannst.</li>
-                    <li><strong>for...else:</strong> Eine Besonderheit in Python. Der <code>else</code>-Block einer Schleife wird <em>nur dann</em> ausgeführt, wenn die Schleife natürlich beendet wurde (also <strong>nicht</strong> durch ein <code>break</code> abgebrochen wurde).</li>
+                    <li><strong>enumerate():</strong> Gibt dir beim Durchlaufen den Index (die Positionsnummer).</li>
+                    <li><strong>zip():</strong> Klebt zwei oder mehr Listen wie ein Reißverschluss zusammen.</li>
+                    <li><strong>for...else:</strong> Der else-Block läuft nur, wenn kein break aufgerufen wurde.</li>
                 </ul>
             `,
-            code: `namen = ["Alice", "Bob", "Charlie"]
-punkte = [85, 92, 78]
-
-# 1. Enumerate (Index und Wert gleichzeitig)
-for index, name in enumerate(namen):
-    # index startet bei 0. Wir rechnen +1 für eine schöne Liste.
-    print(str(index + 1) + ". Platz:", name)
-
-# 2. Zip (Zwei Listen parallel durchlaufen)
-print("--- Punkteliste ---")
-for name, score in zip(namen, punkte):
-    print(name, "hat", score, "Punkte")
-
-# 3. Die for...else Magie (Suchen & Finden)
-gesucht = "David"
-for name in namen:
-    if name == gesucht:
-        print(gesucht, "wurde gefunden!")
-        break
-else:
-    # Dieser Block läuft NUR, wenn das break NIE ausgelöst wurde
-    print(gesucht, "ist nicht in der Liste.")`
-        }
-    ]
-};
+            // NEU: Statt "code:" nutzen wir jetzt "codeBlocks:" als Liste (Array)
+            codeBlocks: [
+                {
+                    title: "1. Enumerate (Index und Wert)",
+                    code: `namen = ["Alice", "Bob", "Charlie"]\n\nfor index, name in enumerate(namen):\n    print(str(index + 1) + ". Platz: " + name)`
+                },
+                {
+                    title: "2. Zip (Zwei Listen parallel)",
+                    code: `namen = ["Alice", "Bob", "Charlie"]\npunkte = [85, 92, 78]\n\nfor name, score in zip(namen, punkte):\n    print(name + " hat " + str(score) + " Punkte")`
+                },
+                {
+                    title: "3. Die for...else Magie",
+                    code: `namen = ["Alice", "Bob", "Charlie"]\ngesucht = "David"\n\nfor name in namen:\n    if name == gesucht:\n        print(gesucht + " wurde gefunden!")\n        break\nelse:\n    print(gesucht + " ist nicht in der Liste.")`
+                }
+            ]
+        };
