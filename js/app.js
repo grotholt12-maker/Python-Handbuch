@@ -106,7 +106,6 @@ function renderChapter(chapter) {
         });
     }
 }
-}
 
 // 3. Ansichten wechseln (Handbuch <-> Sandbox)
 function switchView(view) {
