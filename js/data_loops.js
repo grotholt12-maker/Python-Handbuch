@@ -1,14 +1,145 @@
 export const dataLoops = {
-    category: "2. Kontrollstrukturen",
-    icon: "fa-rotate-right",
+    category: "2. Kontrollstrukturen & Logik",
+    icon: "fa-code-branch",
     chapters: [
         {
-            id: "for_loops",
-            title: "Die For-Schleife",
+            id: "if_else",
+            title: "Bedingungen (if, elif, else)",
             content: `
-                <p class="mb-4">Mit Schleifen wiederholst du Code. Die <span class="keyword-tooltip">for<span class="tooltip-text">Führt den eingerückten Code für jedes Element in einer Sammlung aus.</span></span>-Schleife nutzt du, wenn du vorher weißt, wie oft etwas wiederholt werden soll.</p>
+                <p class="mb-4">Bedingungen geben deinem Programm ein Gehirn. Sie erlauben es, Entscheidungen zu treffen und Code nur dann auszuführen, wenn bestimmte Voraussetzungen erfüllt sind.</p>
+                
+                <h3 class="text-lg font-bold mt-4 mb-2 text-blue-700">Vergleichs- und Logik-Operatoren:</h3>
+                <ul class="list-disc pl-5 mb-4 space-y-1 text-gray-700">
+                    <li><code>==</code> (Gleich), <code>!=</code> (Ungleich)</li>
+                    <li><code>></code>, <code><</code>, <code>>=</code>, <code><=</code> (Größer/Kleiner als)</li>
+                    <li><code>and</code> (Beide Bedingungen müssen True sein)</li>
+                    <li><code>or</code> (Mindestens eine Bedingung muss True sein)</li>
+                    <li><code>not</code> (Kehrt den Wahrheitswert um)</li>
+                </ul>
+
+                <h3 class="text-lg font-bold mt-4 mb-2 text-blue-700">Truthiness (Wahrheit in Python):</h3>
+                <p class="mb-4">In Python ist fast alles "Wahr" (True), es sei denn, es ist absolut leer. Eine <code>0</code>, ein leerer Text <code>""</code>, eine leere Liste <code>[]</code> oder <code>None</code> werden automatisch als <code>False</code> gewertet. Das spart viel Code!</p>
             `,
-            code: `for zahl in range(5):\n    print("Dies ist Durchlauf Nummer:", zahl)`
+            code: `alter = 17
+hat_fuehrerschein = True
+
+# 1. Standard if/elif/else
+if alter >= 18 and hat_fuehrerschein:
+    print("Du darfst fahren.")
+elif alter == 17 and hat_fuehrerschein:
+    print("Du darfst begleitet fahren.")
+else:
+    print("Du darfst nicht fahren.")
+
+# 2. Truthiness (Kurzschreibweise)
+benutzername = ""
+
+# Statt: if benutzername == "":
+if not benutzername:
+    print("Bitte gib einen Namen ein!")
+
+# 3. Inline-If (Ternary Operator) - für Profis
+# Variablen-Zuweisung in einer einzigen Zeile
+status = "Erwachsen" if alter >= 18 else "Minderjährig"
+print("Status:", status)`
+        },
+        {
+            id: "while_loops",
+            title: "Die While-Schleife",
+            content: `
+                <p class="mb-4">Die <code>while</code>-Schleife läuft so lange weiter, wie ihre Bedingung <code>True</code> ist. Sie ist perfekt, wenn du vorher <strong>nicht weißt</strong>, wie oft der Code wiederholt werden muss (z.B. Warten auf eine Benutzereingabe oder bei einem laufenden Spiel).</p>
+                
+                <h3 class="text-lg font-bold mt-4 mb-2 text-blue-700">Schleifen steuern (break & continue):</h3>
+                <ul class="list-disc pl-5 mb-4 space-y-2 text-gray-700">
+                    <li><span class="keyword-tooltip">break<span class="tooltip-text">Bricht die aktuelle Schleife sofort und komplett ab.</span></span>: Zerstört die Schleife sofort. Das Programm läuft nach der Schleife weiter.</li>
+                    <li><span class="keyword-tooltip">continue<span class="tooltip-text">Überspringt den Rest des aktuellen Durchlaufs und springt nach oben zum nächsten.</span></span>: Bricht nur den <em>aktuellen</em> Durchlauf ab und springt direkt wieder nach oben zur Überprüfung der Bedingung.</li>
+                </ul>
+            `,
+            code: `# 1. Klassische While-Schleife
+countdown = 3
+while countdown > 0:
+    print("Start in:", countdown)
+    countdown -= 1  # WICHTIG: Sonst Endlosschleife!
+print("Los!")
+
+# 2. Die Endlosschleife mit break (Sehr häufiges Pattern)
+versuche = 0
+while True:  # Läuft für immer...
+    versuche += 1
+    if versuche == 5:
+        print("Maximale Versuche erreicht. Abbruch!")
+        break  # ...außer wir beenden sie hier absichtlich!
+    
+    if versuche == 2:
+        print("Überspringe Versuch 2")
+        continue  # Springt sofort wieder zu Zeile 11
+
+    print("Versuch Nummer:", versuche)`
+        },
+        {
+            id: "for_loops",
+            title: "Die For-Schleife & Range",
+            content: `
+                <p class="mb-4">Die <code>for</code>-Schleife nutzt du, wenn du <strong>genau weißt</strong>, wie oft iteriert werden soll, oder wenn du durch eine Sammlung von Elementen (Texte, Listen) gehen willst.</p>
+                
+                <h3 class="text-lg font-bold mt-4 mb-2 text-blue-700">Die <code>range()</code> Funktion:</h3>
+                <p class="mb-4">Generiert Zahlenfolgen "on the fly", ohne sie alle im Speicher abzulegen. Sie nimmt bis zu drei Argumente: <code>range(Start, Stopp, Schrittweite)</code>.</p>
+            `,
+            code: `# 1. Durch Text iterieren
+wort = "Python"
+for buchstabe in wort:
+    print("Buchstabe:", buchstabe)
+
+# 2. Range mit einem Argument (Stop) - Startet bei 0!
+for i in range(3):
+    print("Range 3:", i)  # Gibt 0, 1, 2 aus (nicht die 3!)
+
+# 3. Range mit Start und Stop
+for i in range(10, 13):
+    print("Range 10-13:", i) # Gibt 10, 11, 12 aus
+
+# 4. Range mit Schrittweite (Zählen in 5er Schritten)
+for i in range(0, 21, 5):
+    print("5er Schritt:", i) # 0, 5, 10, 15, 20
+
+# 5. Rückwärts zählen
+for i in range(10, 0, -1):
+    print("Rückwärts:", i)`
+        },
+        {
+            id: "advanced_loops",
+            title: "Fortgeschrittene Iteration",
+            content: `
+                <p class="mb-4">Hier wird es "pythonic" (so programmieren echte Python-Entwickler). Diese Werkzeuge machen deinen Code kürzer, schneller und lesbarer.</p>
+                
+                <ul class="list-disc pl-5 mb-4 space-y-2 text-gray-700">
+                    <li><strong>enumerate():</strong> Gibt dir beim Durchlaufen nicht nur das Element, sondern auch seinen Index (die Positionsnummer). Kein manuelles Zählen mehr!</li>
+                    <li><strong>zip():</strong> Klebt zwei oder mehr Listen wie ein Reißverschluss zusammen, sodass du sie gleichzeitig durchlaufen kannst.</li>
+                    <li><strong>for...else:</strong> Eine Besonderheit in Python. Der <code>else</code>-Block einer Schleife wird <em>nur dann</em> ausgeführt, wenn die Schleife natürlich beendet wurde (also <strong>nicht</strong> durch ein <code>break</code> abgebrochen wurde).</li>
+                </ul>
+            `,
+            code: `namen = ["Alice", "Bob", "Charlie"]
+punkte = [85, 92, 78]
+
+# 1. Enumerate (Index und Wert gleichzeitig)
+for index, name in enumerate(namen):
+    # index startet bei 0. Wir rechnen +1 für eine schöne Liste.
+    print(str(index + 1) + ". Platz:", name)
+
+# 2. Zip (Zwei Listen parallel durchlaufen)
+print("--- Punkteliste ---")
+for name, score in zip(namen, punkte):
+    print(name, "hat", score, "Punkte")
+
+# 3. Die for...else Magie (Suchen & Finden)
+gesucht = "David"
+for name in namen:
+    if name == gesucht:
+        print(gesucht, "wurde gefunden!")
+        break
+else:
+    # Dieser Block läuft NUR, wenn das break NIE ausgelöst wurde
+    print(gesucht, "ist nicht in der Liste.")`
         }
     ]
 };
