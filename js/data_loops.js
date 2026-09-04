@@ -107,7 +107,6 @@ for i in range(10, 0, -1):
     print("Rückwärts:", i)`
         },
         {
-            {
             id: "advanced_loops",
             title: "Fortgeschrittene Iteration",
             content: `
