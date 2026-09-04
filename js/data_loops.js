@@ -7,104 +7,56 @@ export const dataLoops = {
             title: "Bedingungen (if, elif, else)",
             content: `
                 <p class="mb-4">Bedingungen geben deinem Programm ein Gehirn. Sie erlauben es, Entscheidungen zu treffen und Code nur dann auszuführen, wenn bestimmte Voraussetzungen erfüllt sind.</p>
-                
-                <h3 class="text-lg font-bold mt-4 mb-2 text-blue-700">Vergleichs- und Logik-Operatoren:</h3>
                 <ul class="list-disc pl-5 mb-4 space-y-1 text-gray-700">
                     <li><code>==</code> (Gleich), <code>!=</code> (Ungleich)</li>
                     <li><code>></code>, <code><</code>, <code>>=</code>, <code><=</code> (Größer/Kleiner als)</li>
-                    <li><code>and</code> (Beide Bedingungen müssen True sein)</li>
-                    <li><code>or</code> (Mindestens eine Bedingung muss True sein)</li>
-                    <li><code>not</code> (Kehrt den Wahrheitswert um)</li>
+                    <li><code>and</code>, <code>or</code>, <code>not</code> (Logische Verknüpfungen)</li>
                 </ul>
-
-                <h3 class="text-lg font-bold mt-4 mb-2 text-blue-700">Truthiness (Wahrheit in Python):</h3>
-                <p class="mb-4">In Python ist fast alles "Wahr" (True), es sei denn, es ist absolut leer. Eine <code>0</code>, ein leerer Text <code>""</code>, eine leere Liste <code>[]</code> oder <code>None</code> werden automatisch als <code>False</code> gewertet. Das spart viel Code!</p>
             `,
-            code: `alter = 17
-hat_fuehrerschein = True
-
-# 1. Standard if/elif/else
-if alter >= 18 and hat_fuehrerschein:
-    print("Du darfst fahren.")
-elif alter == 17 and hat_fuehrerschein:
-    print("Du darfst begleitet fahren.")
-else:
-    print("Du darfst nicht fahren.")
-
-# 2. Truthiness (Kurzschreibweise)
-benutzername = ""
-
-# Statt: if benutzername == "":
-if not benutzername:
-    print("Bitte gib einen Namen ein!")
-
-# 3. Inline-If (Ternary Operator) - für Profis
-# Variablen-Zuweisung in einer einzigen Zeile
-status = "Erwachsen" if alter >= 18 else "Minderjährig"
-print("Status:", status)`
+            codeBlocks: [
+                {
+                    title: "1. Standard if/elif/else",
+                    code: `alter = 17\nhat_fuehrerschein = True\n\nif alter >= 18 and hat_fuehrerschein:\n    print("Du darfst fahren.")\nelif alter == 17 and hat_fuehrerschein:\n    print("Begleitetes Fahren.")\nelse:\n    print("Du darfst nicht fahren.")`
+                },
+                {
+                    title: "2. Truthiness & Inline-If",
+                    code: `benutzername = ""\n\n# Leere Strings gelten als False\nif not benutzername:\n    print("Bitte gib einen Namen ein!")\n\n# Inline-If (Kurzschreibweise)\nalter = 20\nstatus = "Erwachsen" if alter >= 18 else "Minderjährig"\nprint("Status: " + status)`
+                }
+            ]
         },
         {
             id: "while_loops",
             title: "Die While-Schleife",
             content: `
-                <p class="mb-4">Die <code>while</code>-Schleife läuft so lange weiter, wie ihre Bedingung <code>True</code> ist. Sie ist perfekt, wenn du vorher <strong>nicht weißt</strong>, wie oft der Code wiederholt werden muss (z.B. Warten auf eine Benutzereingabe oder bei einem laufenden Spiel).</p>
-                
-                <h3 class="text-lg font-bold mt-4 mb-2 text-blue-700">Schleifen steuern (break & continue):</h3>
-                <ul class="list-disc pl-5 mb-4 space-y-2 text-gray-700">
-                    <li><span class="keyword-tooltip">break<span class="tooltip-text">Bricht die aktuelle Schleife sofort und komplett ab.</span></span>: Zerstört die Schleife sofort. Das Programm läuft nach der Schleife weiter.</li>
-                    <li><span class="keyword-tooltip">continue<span class="tooltip-text">Überspringt den Rest des aktuellen Durchlaufs und springt nach oben zum nächsten.</span></span>: Bricht nur den <em>aktuellen</em> Durchlauf ab und springt direkt wieder nach oben zur Überprüfung der Bedingung.</li>
-                </ul>
+                <p class="mb-4">Die <code>while</code>-Schleife läuft so lange weiter, wie ihre Bedingung <code>True</code> ist. Sie ist perfekt, wenn du vorher nicht weißt, wie oft der Code wiederholt werden muss.</p>
             `,
-            code: `# 1. Klassische While-Schleife
-countdown = 3
-while countdown > 0:
-    print("Start in:", countdown)
-    countdown -= 1  # WICHTIG: Sonst Endlosschleife!
-print("Los!")
-
-# 2. Die Endlosschleife mit break (Sehr häufiges Pattern)
-versuche = 0
-while True:  # Läuft für immer...
-    versuche += 1
-    if versuche == 5:
-        print("Maximale Versuche erreicht. Abbruch!")
-        break  # ...außer wir beenden sie hier absichtlich!
-    
-    if versuche == 2:
-        print("Überspringe Versuch 2")
-        continue  # Springt sofort wieder zu Zeile 11
-
-    print("Versuch Nummer:", versuche)`
+            codeBlocks: [
+                {
+                    title: "1. Klassische While-Schleife",
+                    code: `countdown = 3\nwhile countdown > 0:\n    print("Start in: " + str(countdown))\n    countdown -= 1\nprint("Los!")`
+                },
+                {
+                    title: "2. Schleifen steuern (break & continue)",
+                    code: `versuche = 0\nwhile True:\n    versuche += 1\n    \n    if versuche == 2:\n        print("Überspringe Versuch 2")\n        continue  # Springt sofort wieder nach oben\n        \n    if versuche >= 4:\n        print("Abbruch!")\n        break     # Zerstört die Schleife komplett\n        \n    print("Versuch: " + str(versuche))`
+                }
+            ]
         },
         {
             id: "for_loops",
             title: "Die For-Schleife & Range",
             content: `
-                <p class="mb-4">Die <code>for</code>-Schleife nutzt du, wenn du <strong>genau weißt</strong>, wie oft iteriert werden soll, oder wenn du durch eine Sammlung von Elementen (Texte, Listen) gehen willst.</p>
-                
-                <h3 class="text-lg font-bold mt-4 mb-2 text-blue-700">Die <code>range()</code> Funktion:</h3>
-                <p class="mb-4">Generiert Zahlenfolgen "on the fly", ohne sie alle im Speicher abzulegen. Sie nimmt bis zu drei Argumente: <code>range(Start, Stopp, Schrittweite)</code>.</p>
+                <p class="mb-4">Die <code>for</code>-Schleife nutzt du, wenn du genau weißt, wie oft iteriert werden soll, oder wenn du durch eine Sammlung von Elementen gehen willst.</p>
             `,
-            code: `# 1. Durch Text iterieren
-wort = "Python"
-for buchstabe in wort:
-    print("Buchstabe:", buchstabe)
-
-# 2. Range mit einem Argument (Stop) - Startet bei 0!
-for i in range(3):
-    print("Range 3:", i)  # Gibt 0, 1, 2 aus (nicht die 3!)
-
-# 3. Range mit Start und Stop
-for i in range(10, 13):
-    print("Range 10-13:", i) # Gibt 10, 11, 12 aus
-
-# 4. Range mit Schrittweite (Zählen in 5er Schritten)
-for i in range(0, 21, 5):
-    print("5er Schritt:", i) # 0, 5, 10, 15, 20
-
-# 5. Rückwärts zählen
-for i in range(10, 0, -1):
-    print("Rückwärts:", i)`
+            codeBlocks: [
+                {
+                    title: "1. Durch Text iterieren",
+                    code: `wort = "Python"\nfor buchstabe in wort:\n    print(buchstabe)`
+                },
+                {
+                    title: "2. Zahlenreihen mit range()",
+                    code: `# range(start, stop)\nfor i in range(10, 13):\n    print("Range 10-13: " + str(i))\n\n# range(start, stop, schrittweite)\nfor i in range(0, 11, 5):\n    print("5er Schritt: " + str(i))`
+                }
+            ]
         },
         {
             id: "advanced_loops",
@@ -117,7 +69,6 @@ for i in range(10, 0, -1):
                     <li><strong>for...else:</strong> Der else-Block läuft nur, wenn kein break aufgerufen wurde.</li>
                 </ul>
             `,
-            // NEU: Statt "code:" nutzen wir jetzt "codeBlocks:" als Liste (Array)
             codeBlocks: [
                 {
                     title: "1. Enumerate (Index und Wert)",
@@ -132,4 +83,6 @@ for i in range(10, 0, -1):
                     code: `namen = ["Alice", "Bob", "Charlie"]\ngesucht = "David"\n\nfor name in namen:\n    if name == gesucht:\n        print(gesucht + " wurde gefunden!")\n        break\nelse:\n    print(gesucht + " ist nicht in der Liste.")`
                 }
             ]
-        },
+        }
+    ]
+};
