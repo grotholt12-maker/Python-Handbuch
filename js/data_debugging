@@ -1,0 +1,208 @@
+export const dataErrors = {
+    category: "6. Fehlerbehandlung & Debugging",
+    icon: "fa-bug",
+    chapters: [
+        {
+            id: "konzept",
+            title: "1. Komplette Erklärung (Das Konzept)",
+            content: `
+                <h3 class="text-xl font-bold mb-2 text-blue-700">Was ist Fehlerbehandlung in Python?</h3>
+                <p class="mb-4 text-gray-700">Fehlerbehandlung (Error Handling) ist der Mechanismus, mit dem ein Programm auf unvorhergesehene Laufzeitfehler (Exceptions) reagiert, ohne hart abzustürzen. Statt den Kontrollfluss sofort an das Betriebssystem zurückzugeben, fängt Python den Fehler als Objekt (eine Instanz von <code>BaseException</code>) ab und erlaubt dem Entwickler, diesen Zustand programmatisch zu behandeln.</p>
+                
+                <h3 class="text-xl font-bold mt-6 mb-2 text-blue-700">EAFP vs. LBYL</h3>
+                <p class="mb-4 text-gray-700">Python ist stark vom <strong>EAFP</strong>-Prinzip geprägt: <em>"Easier to Ask for Forgiveness than Permission"</em>. In Sprachen wie C oder Java wird oft <strong>LBYL</strong> (<em>"Look Before You Leap"</em>) angewendet – man prüft erst alle Vorbedingungen (z.B. ob eine Datei existiert), bevor man handelt. In Python führt man die Aktion direkt aus und fängt den Fehler auf, falls sie fehlschlägt. Das ist nicht nur lesbarer, sondern vermeidet auch Race Conditions (z.B. wenn eine Datei zwischen der Prüfung und dem Öffnen gelöscht wird).</p>
+
+                <h3 class="text-xl font-bold mt-6 mb-2 text-blue-700">Technischer Hintergrund (Exceptions als Objekte):</h3>
+                <p class="mb-4 text-gray-700">In CPython sind Exceptions vollwertige Klassen. Tritt ein Fehler auf (z.B. Division durch Null), erzeugt der CPython-Interpreter ein <code>ZeroDivisionError</code>-Objekt, füllt es mit Traceback-Informationen (dem aktuellen Call-Stack) und wirft es über das <code>raise</code>-Äquivalent auf C-Ebene nach oben. Dieser Prozess "unwinded" (wickelt ab) den Stack Frame für Frame, bis ein passender <code>except</code>-Block gefunden wird oder das Programm mit einem Stacktrace terminiert.</p>
+            `
+        },
+        {
+            id: "syntax",
+            title: "2. Code-Aufbau und Syntax",
+            content: `
+                <p class="mb-4 text-gray-700">Das folgende Beispiel zeigt die komplette Struktur der Fehlerbehandlung: Eigene Fehlerklassen, den <code>try/except/else/finally</code>-Block und strukturiertes Logging anstelle von einfachen <code>print()</code>-Ausgaben.</p>
+                
+                <h3 class="text-xl font-bold mt-6 mb-2 text-blue-700">Zeilenweise Analyse:</h3>
+                <ol class="list-decimal pl-5 mb-4 space-y-2 text-gray-700">
+                    <li><strong>Zeile 4-5 (Custom Exception):</strong> Wir definieren eine eigene Klasse <code>VerbindungsFehler</code>, die von <code>Exception</code> erbt. Dies erlaubt uns, domänenspezifische Fehler semantisch sauber zu fangen.</li>
+                    <li><strong>Zeile 11 (<code>try</code>):</strong> Hier beginnt der geschützte Block. Python markiert intern den Stack-Frame für mögliches Unwinding.</li>
+                    <li><strong>Zeile 13 (<code>raise</code>):</strong> Simuliert einen Fehler. Das <code>VerbindungsFehler</code>-Objekt wird instantiiert und "geworfen". Der normale Kontrollfluss stoppt hier sofort.</li>
+                    <li><strong>Zeile 15 (<code>except</code>):</strong> Fängt exakt unseren spezifischen Fehler. Das Fehler-Objekt wird der Variablen <code>e</code> zugewiesen, um Details (wie die Message) auszulesen.</li>
+                    <li><strong>Zeile 18 (<code>except Exception</code>):</strong> Ein Fallback für <em>alle</em> anderen potenziellen Laufzeitfehler.</li>
+                    <li><strong>Zeile 22 (<code>else</code>):</strong> Dieser Block wird <strong>nur</strong> ausgeführt, wenn im <code>try</code>-Block <strong>kein</strong> Fehler geworfen wurde. Er ist ideal, um Logik auszuführen, die vom Erfolg des try-Blocks abhängt, selbst aber keine Fehler werfen soll, die vom obigen <code>except</code> gefangen werden.</li>
+                    <li><strong>Zeile 26 (<code>finally</code>):</strong> Der Teardown-Block. Wird <strong>immer</strong> ausgeführt, egal ob ein Fehler auftrat, ob er gefangen wurde, oder ob ein <code>return</code> im try-Block stand. Garantiert das Schließen von Ressourcen.</li>
+                </ol>
+            `,
+            codeBlocks: [
+                {
+                    title: "Try-Except Struktur & Logging",
+                    code: `import logging
+
+# Logger konfigurieren (statt print zu nutzen)
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+
+class VerbindungsFehler(Exception):
+    """Eigene Exception-Klasse für Netzwerkfehler."""
+    pass
+
+def daten_abrufen(url):
+    try:
+        logging.info(f"Versuche {url} abzurufen...")
+        if url == "offline.com":
+            # Einen spezifischen Fehler werfen
+            raise VerbindungsFehler("Server antwortet nicht.")
+        resultat = "Daten-Payload"
+        
+    except VerbindungsFehler as e:
+        logging.error(f"Netzwerk-Problem: {e}")
+        
+    except Exception as e:
+        # Fallback für alle anderen Fehler (z.B. TypeError)
+        logging.critical(f"Unerwarteter Systemfehler: {e}", exc_info=True)
+        
+    else:
+        # Läuft NUR, wenn das 'try' fehlerfrei durchlief
+        logging.info(f"Erfolg! Verarbeite: {resultat}")
+        
+    finally:
+        # Läuft IMMER, selbst wenn ein Fehler das Programm zum Absturz bringt
+        logging.info("Räume Verbindungs-Sockets auf (Cleanup).")
+
+daten_abrufen("offline.com")`
+                }
+            ]
+        },
+        {
+            id: "keywords",
+            title: "3. Detaillierte Keyword-Analyse & Internals",
+            content: `
+                <div class="space-y-6 text-gray-700">
+                    <div>
+                        <h4 class="text-lg font-bold text-gray-900 border-b pb-1 mb-2"><code>try</code> und "Zero-Cost Exceptions"</h4>
+                        <p class="mb-2"><strong>CPython Internals:</strong> Bis Python 3.10 wurde für jeden <code>try</code>-Block ein Setup-Aufwand im Bytecode (<code>SETUP_FINALLY</code>) betrieben. Seit Python 3.11 nutzt CPython sogenannte <strong>"Zero-Cost Exceptions"</strong>. Der <code>try</code>-Block kostet bei fehlerfreier Ausführung absolut null Overhead (CPU/Speicher). Die Metadaten, wo im Fehlerfall hingesprungen werden soll, sind statisch in Lookup-Tabellen hinterlegt. Erst wenn ein Fehler wirklich auftritt, entsteht Aufwand durch das Generieren des Tracebacks.</p>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-bold text-gray-900 border-b pb-1 mb-2"><code>raise ... from ...</code> (Exception Chaining)</h4>
+                        <p class="mb-2"><strong>Bedeutung:</strong> Oft fängt man einen systemnahen Fehler (z.B. <code>psycopg2.OperationalError</code>) und möchte ihn in einen eigenen Domänenfehler (z.B. <code>DatenbankFehler</code>) umwandeln. Nutzt man <code>raise DatenbankFehler from e</code>, behält Python den ursprünglichen Stacktrace als Ursache bei. Das <code>__cause__</code>-Attribut der neuen Exception wird auf die alte gesetzt, was das Debugging enorm erleichtert.</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-lg font-bold text-gray-900 border-b pb-1 mb-2"><code>assert</code></h4>
+                        <p class="mb-2"><strong>Bedeutung:</strong> Evaluates eine Bedingung. Ist sie <code>False</code>, wird ein <code>AssertionError</code> geworfen. Es dokumentiert interne Invarianten des Codes ("Dies MUSS hier wahr sein, sonst ist der Code kaputt").</p>
+                        <p class="mb-2"><strong>Quirks (Das Sicherheitsrisiko):</strong> Wenn Python mit dem Optimierungsflag (<code>python -O script.py</code>) gestartet wird, werden <strong>alle assert-Statements komplett aus dem Bytecode entfernt!</strong>. Nutze <code>assert</code> daher <strong>niemals</strong> zur Validierung von User-Input oder sicherheitskritischen Berechtigungen (z.B. <code>assert user.is_admin()</code>).</p>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-bold text-gray-900 border-b pb-1 mb-2"><code>logging</code> Modul vs. <code>print()</code></h4>
+                        <p class="mb-2"><strong>CPython Internals:</strong> <code>print()</code> schreibt direkt in <code>sys.stdout</code>. In Multi-Threading-Umgebungen ist <code>print()</code> nicht threadsicher, Zeilen können sich überschneiden. Das <code>logging</code>-Modul verwendet intern Thread-Locks (<code>threading.RLock</code>) und ist vollständig thread-safe. Zudem bietet es Loglevel (DEBUG, INFO, WARNING, ERROR, CRITICAL) und Handler, um Logs asynchron an Dateien, Logstash oder Sentry zu senden.</p>
+                    </div>
+                </div>
+            `
+        },
+        {
+            id: "use_cases",
+            title: "4. Praxis-Szenarien (Use Cases)",
+            content: `
+                <p class="mb-4 text-gray-700">In Enterprise-Architekturen ist sauberes Error-Handling und Logging entscheidend für die Observability (Überwachbarkeit) des Systems.</p>
+            `,
+            codeBlocks: [
+                {
+                    title: "Szenario 1: Exception Chaining in der API-Schicht",
+                    code: `import json
+
+class ConfigParseError(Exception):
+    """Spezifische Exception für Konfigurationsfehler."""
+    pass
+
+def load_config(filepath):
+    try:
+        with open(filepath, 'r') as f:
+            return json.load(f)
+    except FileNotFoundError as e:
+        # Der Ursprungsfehler (e) wird an die neue Exception angehängt
+        raise ConfigParseError(f"Konfigurationsdatei '{filepath}' fehlt.") from e
+    except json.JSONDecodeError as e:
+        raise ConfigParseError("Die Datei ist kein valides JSON.") from e
+
+# Aufrufer sieht eine saubere, fachliche 'ConfigParseError', 
+# der Stacktrace zeigt aber auch exakt, ob es an fehlender Datei oder Syntax lag.`
+                },
+                {
+                    title: "Szenario 2: LBYL vs. EAFP (Dictionary Lookups)",
+                    code: `user_data = {"id": 42, "name": "Alice"}
+
+# Anti-Pattern (LBYL - Look Before You Leap)
+# Unpythonic und kostet bei jedem Durchlauf einen doppelten Lookup im Dictionary!
+if "email" in user_data:
+    email = user_data["email"]
+else:
+    email = "unknown@domain.com"
+
+# Best Practice (EAFP - Easier to Ask for Forgiveness)
+# Kostet 0 Overhead (Zero-Cost Exceptions ab 3.11), wenn der Key existiert.
+try:
+    email = user_data["email"]
+except KeyError:
+    email = "unknown@domain.com"
+
+# (Hinweis: Für simple Dicts ist user_data.get("email", "default") am elegantesten,
+#  das Prinzip gilt aber identisch für tiefe Objekt-Hierarchien oder Attribute)`
+                },
+                {
+                    title: "Szenario 3: Produktionsreifes Logging",
+                    code: `import logging
+
+# Formatter mit Zeitstempel, Thread-ID und Modulnamen
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+# Handler 1: Schreibt ab WARNING in eine Datei
+file_handler = logging.FileHandler('app_errors.log')
+file_handler.setLevel(logging.WARNING)
+file_handler.setFormatter(formatter)
+
+# Logger instanziieren und Handler anbinden
+logger = logging.getLogger('ZahlungsModul')
+logger.setLevel(logging.DEBUG)
+logger.addHandler(file_handler)
+
+def verarbeite_zahlung(betrag):
+    logger.debug(f"Start der Transaktion über {betrag} EUR.")
+    if betrag < 0:
+        # exc_info=True hängt automatisch den kompletten Stacktrace an das Log!
+        logger.error("Negativer Betrag erkannt!", exc_info=True)
+        raise ValueError("Betrag negativ")
+    logger.info("Transaktion erfolgreich.")`
+                }
+            ]
+        },
+        {
+            id: "best_practices",
+            title: "5. Best Practices & Typische Fehler (Pitfalls)",
+            content: `
+                <h3 class="text-xl font-bold mt-4 mb-2 text-red-600">Gefährliche Anti-Patterns</h3>
+                
+                <ul class="list-disc pl-5 mb-4 space-y-4 text-gray-700">
+                    <li><strong>1. Der "Bare Except" (Der schlimmste Python-Fehler)</strong><br>
+                        <em>Das Problem:</em> Ein nacktes <code>except:</code> fängt buchstäblich <em>alles</em>, auch <code>SystemExit</code> (wenn man <code>sys.exit()</code> ruft) oder <code>KeyboardInterrupt</code> (wenn man STRG+C drückt, um das Skript abzubrechen). Das Programm wird unkillbar.<br>
+                        <em>Falsch:</em> <code>except:</code><br>
+                        <em>Richtig:</em> Nutze immer mindestens <code>except Exception as e:</code>. Dies fängt alle logischen Programmfehler, lässt aber System-Signale (die von <code>BaseException</code> erben, aber nicht von <code>Exception</code>) durch.
+                    </li>
+                    <li><strong>2. Fehler schlucken (The "Pass" Anti-Pattern)</strong><br>
+                        <em>Das Problem:</em> <code>try: ... except Exception: pass</code> ignoriert Fehler komplett. Das Programm läuft in einem undefinierten Zustand (Corrupted State) weiter. Die Fehlersuche wird Wochen dauern.<br>
+                        <em>Lösung:</em> Wenn ein Fehler wirklich ignoriert werden kann, logge ihn zumindest auf <code>DEBUG</code>-Level oder nutze <code>contextlib.suppress(SpezifischerFehler)</code> für maximale Klarheit.
+                    </li>
+                    <li><strong>3. Missbrauch von Exceptions für Kontrollfluss</strong><br>
+                        <em>Das Problem:</em> Exceptions zu werfen ist in Python relativ teuer (Stacktrace-Generierung). Nutze Exceptions nicht für normale, extrem häufige Abzweigungen in Performance-kritischen Schleifen (z.B. als Ersatz für ein <code>if</code> oder <code>break</code> in einer Schleife, die Millionen mal iteriert).
+                    </li>
+                </ul>
+
+                <h3 class="text-xl font-bold mt-6 mb-2 text-blue-700">Architektur-Aspekte (Memory & CPU)</h3>
+                <ul class="list-disc pl-5 mb-4 space-y-2 text-gray-700">
+                    <li><strong>Vermeide Memory-Leaks durch Tracebacks:</strong> Wenn du Fehlerobjekte (<code>e</code>) fängst und sie global abspeicherst (z.B. in einer Liste zur späteren Auswertung), speicherst du den kompletten Stacktrace inklusive aller lokalen Variablen aller Funktionen in diesem Stack. Das führt bei Webservern schnell zu gigantischen Memory-Leaks. Extrahiere stattdessen nur die Strings (<code>str(e)</code>) oder formatiere den Traceback in einen String (mit dem <code>traceback</code> Modul), bevor du ihn im RAM hältst.</li>
+                    <li><strong>Lazy Logging Formatting:</strong> Nutze beim Logging <em>immer</em> die Lazy-Syntax: <code>logger.debug("Wert: %s", teure_funktion())</code>. Wenn das Skript auf Level <code>INFO</code> läuft, wird <code>teure_funktion()</code> niemals ausgeführt. Nutzt du hingegen f-Strings (<code>logger.debug(f"Wert: {teure_funktion()}")</code>), muss Python den String und die Funktion erst voll berechnen (CPU Zeit), nur damit der Logger die fertige Nachricht danach verwirft.</li>
+                </ul>
+            `
+        }
+    ]
+};
