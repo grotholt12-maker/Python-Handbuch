@@ -39,27 +39,73 @@ function renderNavigation() {
         nav.appendChild(categoryDiv);
     });
 }
-
-// 2. Kapitel im Hauptbereich anzeigen
+// 2. Kapitel im Hauptbereich anzeigen (NEU: Mit Inline-Sandboxes)
 function renderChapter(chapter) {
-    contentArea.innerHTML = `
+    let contentHtml = `
         <h2 class="text-3xl font-bold text-gray-800 mb-4">${chapter.title}</h2>
         <div class="prose max-w-none text-gray-700">${chapter.content}</div>
-        <div class="mt-6">
-            <div class="flex justify-between items-center bg-gray-800 text-gray-400 text-xs py-2 px-4 rounded-t-lg">
-                <span>Beispiel-Code</span>
-                <button class="hover:text-white transition copy-btn" data-code="${encodeURIComponent(chapter.code)}"><i class="fa-solid fa-laptop-code mr-1"></i> In Sandbox testen</button>
-            </div>
-            <pre class="code-block-container rounded-t-none mt-0"><code>${chapter.code}</code></pre>
-        </div>
     `;
 
-    // Button Event Listener um Code in die Sandbox zu laden
-    contentArea.querySelector('.copy-btn').addEventListener('click', (e) => {
-        const code = decodeURIComponent(e.target.dataset.code || e.target.parentElement.dataset.code);
-        document.getElementById('code-editor').value = code;
-        switchView('sandbox');
-    });
+    // Wenn das Kapitel aufgeteilte Code-Blöcke hat, baue für jeden eine Sandbox
+    if (chapter.codeBlocks) {
+        chapter.codeBlocks.forEach((block, index) => {
+            // Berechne die Höhe der Textarea basierend auf den Zeilen
+            const lineCount = block.code.split('\n').length;
+            
+            contentHtml += `
+                <div class="mt-8 border border-gray-700 rounded-lg overflow-hidden shadow-lg">
+                    <div class="flex justify-between items-center bg-gray-800 text-gray-300 text-sm py-2 px-4">
+                        <span class="font-bold text-blue-400">${block.title}</span>
+                        <button class="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded text-xs font-bold transition flex items-center gap-1 run-inline-btn" data-index="${index}">
+                            <i class="fa-solid fa-play"></i> Ausführen
+                        </button>
+                    </div>
+                    <textarea id="editor-${index}" class="w-full bg-[#1e1e1e] text-green-400 font-mono p-4 border-none focus:outline-none resize-y" spellcheck="false" rows="${lineCount}">${block.code}</textarea>
+                    <div class="bg-black border-t border-gray-700 flex flex-col hidden" id="console-container-${index}">
+                        <div class="bg-gray-900 text-gray-500 text-[10px] py-1 px-3 font-mono uppercase tracking-wider">Output Konsole</div>
+                        <pre id="output-${index}" class="text-gray-300 font-mono p-3 overflow-y-auto text-sm"></pre>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    contentArea.innerHTML = contentHtml;
+
+    // Event Listener für jeden einzelnen "Ausführen"-Button
+    if (chapter.codeBlocks) {
+        const runButtons = contentArea.querySelectorAll('.run-inline-btn');
+        runButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = e.currentTarget.dataset.index;
+                const code = document.getElementById(`editor-${index}`).value;
+                const consoleContainer = document.getElementById(`console-container-${index}`);
+                const output = document.getElementById(`output-${index}`);
+                
+                // Konsole sichtbar machen und Lade-Text anzeigen
+                consoleContainer.classList.remove('hidden');
+                output.innerHTML = "Lade...\n";
+                
+                // Simuliere Python Ausführung (wie vorher in der großen Sandbox)
+                setTimeout(() => {
+                    let result = "";
+                    if(code.includes('print')) {
+                        const matches = code.match(/print\((.*?)\)/g);
+                        if(matches) {
+                            matches.forEach(m => {
+                                // Bereinigt den Print-Befehl für die simple Simulation
+                                result += m.replace('print(', '').replace(/\)$/, '').replace(/"/g, '').replace(/'/g, '') + "\n";
+                            });
+                        }
+                    } else {
+                        result += "Keine print-Anweisung gefunden.\n";
+                    }
+                    output.innerHTML = result + "\n[Prozess beendet]";
+                }, 300);
+            });
+        });
+    }
+}
 }
 
 // 3. Ansichten wechseln (Handbuch <-> Sandbox)
